@@ -1,1 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova — Build the Future</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  :root {
+    --bg: #0a0a0f;
+    --surface: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.1);
+    --text: #f0f0f5;
+    --muted: #9a9ab0;
+    --accent1: #7c3aed;
+    --accent2: #06b6d4;
+    --accent3: #ec4899;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ===== Animated background ===== */
+  .bg-glow {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+  }
+  .bg-glow::before, .bg-glow::after {
+    content: '';
+    position: absolute;
+    width: 60vw; height: 60vw;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.25;
+    animation: float 20s ease-in-out infinite alternate;
+  }
+  .bg-glow::before {
+    background: var(--accent1);
+    top: -20%; left: -10%;
+  }
+  .bg-glow::after {
+    background: var(--accent2);
+    bottom: -20%; right: -10%;
+    animation-delay: -10s;
+  }
+  @keyframes float {
+    from { transform: translate(0,0) scale(1); }
+    to   { transform: translate(10vw, 5vh) scale(1.2); }
+  }
+
+  /* ===== Navigation ===== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 6%;
+    backdrop-filter: blur(20px);
+    background: rgba(10,10,15,0.6);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .btn {
+    padding: 0.7rem 1.6rem;
+    border-radius: 99px;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    color: #fff;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(124,58,237,0.4);
+  }
+
+  /* ===== Hero ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 6%;
+  }
+  .badge {
+    padding: 0.4rem 1.1rem;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 0.85rem;
+    color: var(--accent2);
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    max-width: 850px;
+    animation: fadeUp 0.8s 0.15s ease both;
+  }
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--accent1), var(--accent3), var(--accent2));
+    background-size: 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 4s linear infinite;
+  }
+  @keyframes shimmer {
+    to { background-position: 200% center; }
+  }
+  .hero p {
+    max-width: 550px;
+    color: var(--muted);
+    font-size: 1.15rem;
+    margin: 1.5rem 0 2.5rem;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    animation: fadeUp 0.8s 0.45s ease both;
+  }
+  .btn-ghost {
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { box-shadow: 0 10px 30px rgba(255,255,255,0.08); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== Sections ===== */
+  section { padding: 6rem 6%; }
+  .section-title {
+    text-align: center;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+  }
+  .section-sub {
+    text-align: center;
+    color: var(--muted);
+    max-width: 500px;
+    margin: 0 auto 4rem;
+  }
+
+  /* ===== Cards ===== */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .card {
+    padding: 2.5rem 2rem;
+    border-radius: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+    transition: transform 0.4s, border-color 0.4s, box-shadow 0.4s;
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  .card.visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(124,58,237,0.5);
+    box-shadow: 0 20px 50px rgba(124,58,237,0.15);
+  }
+  .card .icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    margin-bottom: 1.5rem;
+  }
+  .card h3 { font-size: 1.25rem; margin-bottom: 0.6rem; }
+  .card p { color: var(--muted); font-size: 0.95rem; }
+
+  /* ===== Stats ===== */
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    flex-wrap: wrap;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .stat { text-align: center; }
+  .stat .num {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent2), var(--accent1));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .stat .label { color: var(--muted); }
+
+  /* ===== CTA ===== */
+  .cta-box {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 5rem 2rem;
+    border-radius: 30px;
+    background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(6,182,212,0.15));
+    border: 1px solid var(--border);
+  }
+  .cta-box h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); margin-bottom: 1rem; }
+  .cta-box p { color: var(--muted); margin-bottom: 2rem; }
+
+  /* ===== Footer ===== */
+  footer {
+    text-align: center;
+    padding: 3rem 6%;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 700px) {
+    .nav-links { display: none; }
+    .stats { gap: 2.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<nav>
+  <div class="logo">✦ Nova</div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#stats">Stats</a></li>
+    <li><a href="#cta">Pricing</a></li>
+  </ul>
+  <button class="btn">Get Started</button>
+</nav>
+
+<header class="hero">
+  <div class="badge">🚀 Now in public beta</div>
+  <h1>Build something <span>extraordinary</span> today</h1>
+  <p>Nova gives you the tools to design, launch, and scale beautiful digital products — faster than ever before.</p>
+  <div class="hero-cta">
+    <button class="btn">Start Free Trial</button>
+    <button class="btn btn-ghost">Watch Demo</button>
+  </div>
+</header>
+
+<section id="features">
+  <h2 class="section-title">Everything you need</h2>
+  <p class="section-sub">Powerful features designed to help your team move faster.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="icon">⚡</div>
+      <h3>Lightning Fast</h3>
+      <p>Optimized performance with sub-second load times, everywhere in the world.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🔒</div>
+      <h3>Secure by Default</h3>
+      <p>Enterprise-grade encryption and compliance built into every layer.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🎨</div>
+      <h3>Beautiful Design</h3>
+      <p>Pixel-perfect components and themes that adapt to your brand instantly.</p>
+    </div>
+    <div class="card">
+      <div class="icon">📊</div>
+      <h3>Smart Analytics</h3>
+      <p>Real-time insights that help you make better decisions, faster.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🤝</div>
+      <h3>Team Collaboration</h3>
+      <p>Work together seamlessly with live editing and instant sync.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🌍</div>
+      <h3>Global Scale</h3>
+      <p>Deployed across 30+ regions so your users are always
