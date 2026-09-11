@@ -1,330 +1,1783 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nova — Build the Future</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOXA Audio | Aether X1</title>
+  <meta name="description" content="NOXA Aether X1 futuristic luxury wireless headphones.">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
-  :root {
-    --bg: #0a0a0f;
-    --surface: rgba(255,255,255,0.04);
-    --border: rgba(255,255,255,0.1);
-    --text: #f0f0f5;
-    --muted: #9a9ab0;
-    --accent1: #7c3aed;
-    --accent2: #06b6d4;
-    --accent3: #ec4899;
-  }
+    :root {
+      --bg: #0a0d0e;
+      --bg-soft: #111617;
+      --panel: rgba(22, 28, 29, 0.72);
+      --panel-solid: #151b1c;
+      --line: rgba(255, 255, 255, 0.11);
+      --line-strong: rgba(255, 255, 255, 0.18);
+      --text: #f1f3ed;
+      --muted: #9da7a3;
+      --lime: #cbf56a;
+      --cyan: #8be9e4;
+      --orange: #f6a56b;
+      --shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+      --radius: 26px;
+    }
 
-  html { scroll-behavior: smooth; }
+    * {
+      box-sizing: border-box;
+    }
 
-  body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    overflow-x: hidden;
-    line-height: 1.6;
-  }
+    html {
+      scroll-behavior: smooth;
+    }
 
-  /* ===== Animated background ===== */
-  .bg-glow {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    overflow: hidden;
-  }
-  .bg-glow::before, .bg-glow::after {
-    content: '';
-    position: absolute;
-    width: 60vw; height: 60vw;
-    border-radius: 50%;
-    filter: blur(120px);
-    opacity: 0.25;
-    animation: float 20s ease-in-out infinite alternate;
-  }
-  .bg-glow::before {
-    background: var(--accent1);
-    top: -20%; left: -10%;
-  }
-  .bg-glow::after {
-    background: var(--accent2);
-    bottom: -20%; right: -10%;
-    animation-delay: -10s;
-  }
-  @keyframes float {
-    from { transform: translate(0,0) scale(1); }
-    to   { transform: translate(10vw, 5vh) scale(1.2); }
-  }
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 15%, rgba(203, 245, 106, 0.07), transparent 30%),
+        radial-gradient(circle at 90% 30%, rgba(139, 233, 228, 0.07), transparent 26%),
+        linear-gradient(135deg, #090c0d 0%, #0b1112 45%, #0a0c0d 100%);
+      font-family: "Manrope", sans-serif;
+      overflow-x: hidden;
+    }
 
-  /* ===== Navigation ===== */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.2rem 6%;
-    backdrop-filter: blur(20px);
-    background: rgba(10,10,15,0.6);
-    border-bottom: 1px solid var(--border);
-  }
-  .logo {
-    font-size: 1.5rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, var(--accent1), var(--accent2));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .nav-links {
-    display: flex;
-    gap: 2.5rem;
-    list-style: none;
-  }
-  .nav-links a {
-    color: var(--muted);
-    text-decoration: none;
-    font-size: 0.95rem;
-    transition: color 0.3s;
-  }
-  .nav-links a:hover { color: var(--text); }
-  .btn {
-    padding: 0.7rem 1.6rem;
-    border-radius: 99px;
-    border: none;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    background: linear-gradient(135deg, var(--accent1), var(--accent2));
-    color: #fff;
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-  .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(124,58,237,0.4);
-  }
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      content: "";
+      opacity: 0.2;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 70px 70px;
+      mask-image: linear-gradient(to bottom, black, transparent 80%);
+    }
 
-  /* ===== Hero ===== */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 0 6%;
-  }
-  .badge {
-    padding: 0.4rem 1.1rem;
-    border-radius: 99px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    font-size: 0.85rem;
-    color: var(--accent2);
-    margin-bottom: 1.5rem;
-    animation: fadeUp 0.8s ease both;
-  }
-  .hero h1 {
-    font-size: clamp(2.5rem, 7vw, 5rem);
-    font-weight: 800;
-    line-height: 1.1;
-    max-width: 850px;
-    animation: fadeUp 0.8s 0.15s ease both;
-  }
-  .hero h1 span {
-    background: linear-gradient(135deg, var(--accent1), var(--accent3), var(--accent2));
-    background-size: 200%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation: shimmer 4s linear infinite;
-  }
-  @keyframes shimmer {
-    to { background-position: 200% center; }
-  }
-  .hero p {
-    max-width: 550px;
-    color: var(--muted);
-    font-size: 1.15rem;
-    margin: 1.5rem 0 2.5rem;
-    animation: fadeUp 0.8s 0.3s ease both;
-  }
-  .hero-cta {
-    display: flex;
-    gap: 1rem;
-    animation: fadeUp 0.8s 0.45s ease both;
-  }
-  .btn-ghost {
-    background: var(--surface);
-    border: 1px solid var(--border);
-  }
-  .btn-ghost:hover { box-shadow: 0 10px 30px rgba(255,255,255,0.08); }
+    button {
+      border: 0;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+    }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-  /* ===== Sections ===== */
-  section { padding: 6rem 6%; }
-  .section-title {
-    text-align: center;
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    font-weight: 800;
-    margin-bottom: 1rem;
-  }
-  .section-sub {
-    text-align: center;
-    color: var(--muted);
-    max-width: 500px;
-    margin: 0 auto 4rem;
-  }
+    .shell {
+      width: min(1440px, calc(100% - 48px));
+      margin: 0 auto;
+    }
 
-  /* ===== Cards ===== */
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  .card {
-    padding: 2.5rem 2rem;
-    border-radius: 20px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    backdrop-filter: blur(10px);
-    transition: transform 0.4s, border-color 0.4s, box-shadow 0.4s;
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  .card.visible {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-  .card:hover {
-    transform: translateY(-8px);
-    border-color: rgba(124,58,237,0.5);
-    box-shadow: 0 20px 50px rgba(124,58,237,0.15);
-  }
-  .card .icon {
-    width: 52px; height: 52px;
-    border-radius: 14px;
-    display: grid;
-    place-items: center;
-    font-size: 1.5rem;
-    background: linear-gradient(135deg, var(--accent1), var(--accent2));
-    margin-bottom: 1.5rem;
-  }
-  .card h3 { font-size: 1.25rem; margin-bottom: 0.6rem; }
-  .card p { color: var(--muted); font-size: 0.95rem; }
+    .mono {
+      color: var(--muted);
+      font-family: "DM Mono", monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
 
-  /* ===== Stats ===== */
-  .stats {
-    display: flex;
-    justify-content: center;
-    gap: 4rem;
-    flex-wrap: wrap;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
-  .stat { text-align: center; }
-  .stat .num {
-    font-size: 3rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, var(--accent2), var(--accent1));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .stat .label { color: var(--muted); }
+    .navbar {
+      position: fixed;
+      top: 18px;
+      right: 0;
+      left: 0;
+      z-index: 30;
+      width: min(1380px, calc(100% - 48px));
+      margin: 0 auto;
+      padding: 13px 16px 13px 21px;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 999px;
+      background: rgba(15, 20, 21, 0.68);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
 
-  /* ===== CTA ===== */
-  .cta-box {
-    max-width: 900px;
-    margin: 0 auto;
-    text-align: center;
-    padding: 5rem 2rem;
-    border-radius: 30px;
-    background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(6,182,212,0.15));
-    border: 1px solid var(--border);
-  }
-  .cta-box h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); margin-bottom: 1rem; }
-  .cta-box p { color: var(--muted); margin-bottom: 2rem; }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
 
-  /* ===== Footer ===== */
-  footer {
-    text-align: center;
-    padding: 3rem 6%;
-    color: var(--muted);
-    border-top: 1px solid var(--border);
-    font-size: 0.9rem;
-  }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
 
-  @media (max-width: 700px) {
-    .nav-links { display: none; }
-    .stats { gap: 2.5rem; }
-  }
-</style>
+    .brand-mark {
+      display: grid;
+      width: 27px;
+      height: 27px;
+      place-items: center;
+      border-radius: 50%;
+      color: #121614;
+      background: var(--lime);
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      margin-left: auto;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .nav-links a {
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-button,
+    .cart-button {
+      display: grid;
+      position: relative;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.04);
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+    }
+
+    .icon-button:hover,
+    .cart-button:hover {
+      border-color: var(--line-strong);
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .cart-button {
+      width: auto;
+      padding: 0 15px;
+      border-radius: 999px;
+      gap: 8px;
+      color: #121614;
+      background: var(--lime);
+      border-color: var(--lime);
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
+    .cart-count {
+      display: grid;
+      width: 19px;
+      height: 19px;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--lime);
+      background: #121614;
+      font-family: "DM Mono", monospace;
+      font-size: 0.62rem;
+    }
+
+    .hero {
+      display: grid;
+      min-height: 860px;
+      padding-top: 150px;
+      padding-bottom: 70px;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 2;
+      padding: 30px 0 40px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 26px;
+      color: var(--lime);
+      font-family: "DM Mono", monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 29px;
+      height: 1px;
+      content: "";
+      background: var(--lime);
+    }
+
+    h1 {
+      max-width: 700px;
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(4.2rem, 8vw, 8.8rem);
+      font-weight: 600;
+      letter-spacing: -0.085em;
+      line-height: 0.85;
+    }
+
+    h1 span {
+      color: var(--lime);
+    }
+
+    .hero-description {
+      max-width: 450px;
+      margin: 31px 0 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 35px;
+    }
+
+    .primary-button,
+    .secondary-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 21px;
+      border-radius: 999px;
+      gap: 10px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .primary-button {
+      color: #111511;
+      background: var(--lime);
+      box-shadow: 0 10px 30px rgba(203, 245, 106, 0.12);
+    }
+
+    .secondary-button {
+      border: 1px solid var(--line-strong);
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .primary-button:hover,
+    .secondary-button:hover {
+      transform: translateY(-3px);
+    }
+
+    .primary-button:hover {
+      box-shadow: 0 16px 38px rgba(203, 245, 106, 0.2);
+    }
+
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      margin-top: 55px;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--muted);
+      font-size: 0.74rem;
+    }
+
+    .meta-item i {
+      color: var(--lime);
+    }
+
+    .visual-wrap {
+      position: relative;
+      min-height: 640px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 38px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 52%, rgba(203, 245, 106, 0.11), transparent 25%),
+        radial-gradient(circle at 70% 35%, rgba(139, 233, 228, 0.08), transparent 30%),
+        linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.015));
+      box-shadow: var(--shadow);
+    }
+
+    .visual-wrap::before {
+      position: absolute;
+      inset: 0;
+      content: "";
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(circle at center, black, transparent 75%);
+    }
+
+    #product-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .visual-label {
+      position: absolute;
+      z-index: 2;
+      padding: 10px 13px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(11, 15, 16, 0.54);
+      backdrop-filter: blur(12px);
+    }
+
+    .visual-label.top {
+      top: 25px;
+      left: 25px;
+    }
+
+    .visual-label.bottom {
+      right: 25px;
+      bottom: 25px;
+      text-align: right;
+    }
+
+    .visual-label strong {
+      display: block;
+      margin-top: 5px;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .canvas-controls {
+      display: flex;
+      position: absolute;
+      right: 25px;
+      bottom: 25px;
+      z-index: 2;
+      gap: 7px;
+    }
+
+    .canvas-control {
+      display: grid;
+      width: 39px;
+      height: 39px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      color: var(--muted);
+      background: rgba(11, 15, 16, 0.65);
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+
+    .canvas-control.active,
+    .canvas-control:hover {
+      color: #111511;
+      background: var(--lime);
+    }
+
+    .product-section {
+      display: grid;
+      padding: 80px 0 110px;
+      grid-template-columns: 0.75fr 1.25fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .section-title {
+      margin: 13px 0 0;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(2.5rem, 4vw, 4.3rem);
+      letter-spacing: -0.06em;
+      line-height: 0.95;
+    }
+
+    .section-copy {
+      margin: 25px 0 0;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .product-details {
+      max-width: 580px;
+      justify-self: end;
+      width: 100%;
+    }
+
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      padding-bottom: 25px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .detail-title {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 2.1rem;
+      letter-spacing: -0.05em;
+    }
+
+    .rating {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--lime);
+      font-size: 0.8rem;
+    }
+
+    .rating span {
+      color: var(--muted);
+    }
+
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .price {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 2rem;
+    }
+
+    .old-price {
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-decoration: line-through;
+    }
+
+    .option-label {
+      display: flex;
+      justify-content: space-between;
+      margin: 27px 0 13px;
+      color: var(--muted);
+      font-family: "DM Mono", monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .selected-value {
+      color: var(--text);
+    }
+
+    .swatches {
+      display: flex;
+      gap: 11px;
+    }
+
+    .swatch {
+      position: relative;
+      width: 34px;
+      height: 34px;
+      border: 2px solid transparent;
+      border-radius: 50%;
+      background: var(--swatch);
+      box-shadow: inset 0 0 0 4px #111617;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .swatch::after {
+      position: absolute;
+      inset: -5px;
+      border: 1px solid transparent;
+      border-radius: 50%;
+      content: "";
+    }
+
+    .swatch.active {
+      border-color: var(--lime);
+      transform: scale(1.06);
+    }
+
+    .swatch.active::after {
+      border-color: rgba(203, 245, 106, 0.35);
+    }
+
+    .size-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .size-button {
+      min-height: 45px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.035);
+      font-family: "DM Mono", monospace;
+      font-size: 0.73rem;
+      transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+    }
+
+    .size-button.active,
+    .size-button:hover {
+      border-color: var(--lime);
+      color: var(--text);
+      background: rgba(203, 245, 106, 0.09);
+    }
+
+    .buy-row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 10px;
+      margin-top: 31px;
+    }
+
+    .quantity {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.035);
+    }
+
+    .quantity button {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      color: var(--text);
+      background: transparent;
+    }
+
+    .quantity button:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .details-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 38px;
+    }
+
+    .detail-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 57px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .detail-chip i {
+      color: var(--lime);
+    }
+
+    .features {
+      padding: 110px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .features-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 30px;
+      margin-bottom: 42px;
+    }
+
+    .features-head .section-title {
+      max-width: 560px;
+    }
+
+    .features-head p {
+      max-width: 330px;
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      text-align: right;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .feature-card {
+      position: relative;
+      min-height: 245px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.035);
+      transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(203,245,106,0.44);
+      background: rgba(203,245,106,0.06);
+      transform: translateY(-6px);
+    }
+
+    .feature-card::after {
+      position: absolute;
+      right: -50px;
+      bottom: -50px;
+      width: 150px;
+      height: 150px;
+      border: 1px solid rgba(203,245,106,0.16);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .feature-icon {
+      display: grid;
+      width: 46px;
+      height: 46px;
+      place-items: center;
+      margin-bottom: 55px;
+      border: 1px solid rgba(203,245,106,0.3);
+      border-radius: 13px;
+      color: var(--lime);
+      background: rgba(203,245,106,0.08);
+    }
+
+    .feature-card h3 {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .feature-card p {
+      margin: 9px 0 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.6;
+    }
+
+    .manifesto {
+      display: grid;
+      min-height: 430px;
+      padding: 110px 0;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 50px;
+      align-items: center;
+    }
+
+    .manifesto-number {
+      color: var(--lime);
+      font-family: "DM Mono", monospace;
+      font-size: 5rem;
+      line-height: 1;
+    }
+
+    .manifesto h2 {
+      max-width: 800px;
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(2.7rem, 5vw, 5.7rem);
+      letter-spacing: -0.08em;
+      line-height: 0.92;
+    }
+
+    .manifesto h2 em {
+      color: var(--lime);
+      font-style: normal;
+    }
+
+    footer {
+      padding: 30px 0 45px;
+      border-top: 1px solid var(--line);
+    }
+
+    .footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .footer-copy {
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+
+    .drawer-backdrop,
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: none;
+      background: rgba(0, 0, 0, 0.62);
+      backdrop-filter: blur(6px);
+    }
+
+    .drawer-backdrop.visible,
+    .modal-backdrop.visible {
+      display: block;
+    }
+
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 41;
+      display: flex;
+      width: min(460px, 100%);
+      padding: 25px;
+      flex-direction: column;
+      background: #121718;
+      border-left: 1px solid var(--line-strong);
+      box-shadow: -25px 0 80px rgba(0,0,0,0.3);
+      transform: translateX(100%);
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .drawer-title {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1.7rem;
+      letter-spacing: -0.05em;
+    }
+
+    .close-button {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      color: var(--muted);
+      background: transparent;
+    }
+
+    .cart-items {
+      display: flex;
+      flex: 1;
+      padding: 24px 0;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+    }
+
+    .cart-item {
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      gap: 13px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: rgba(255,255,255,0.035);
+    }
+
+    .cart-thumb {
+      display: grid;
+      width: 72px;
+      height: 72px;
+      place-items: center;
+      border-radius: 12px;
+      color: var(--lime);
+      background: radial-gradient(circle, rgba(203,245,106,0.21), rgba(203,245,106,0.03));
+    }
+
+    .cart-item-name {
+      margin: 0 0 5px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .cart-item-meta {
+      color: var(--muted);
+      font-size: 0.7rem;
+    }
+
+    .cart-item-price {
+      margin-top: 9px;
+      font-family: "DM Mono", monospace;
+      font-size: 0.76rem;
+    }
+
+    .remove-item {
+      align-self: start;
+      color: var(--muted);
+      background: transparent;
+    }
+
+    .drawer-footer {
+      padding-top: 19px;
+      border-top: 1px solid var(--line);
+    }
+
+    .subtotal-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 17px;
+      font-size: 0.82rem;
+    }
+
+    .subtotal-row span:first-child {
+      color: var(--muted);
+    }
+
+    .empty-cart {
+      display: grid;
+      min-height: 260px;
+      place-items: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    .empty-cart i {
+      display: block;
+      margin: 0 auto 15px;
+      color: var(--lime);
+    }
+
+    .checkout-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: 51;
+      width: min(500px, calc(100% - 32px));
+      padding: 28px;
+      border: 1px solid var(--line-strong);
+      border-radius: 24px;
+      background: #141a1b;
+      box-shadow: 0 35px 100px rgba(0,0,0,0.5);
+      opacity: 0;
+      transform: translate(-50%, -46%) scale(0.95);
+      pointer-events: none;
+    }
+
+    .checkout-modal.visible {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+      pointer-events: auto;
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .modal-head h2 {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: -0.06em;
+    }
+
+    .modal-head p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .checkout-form {
+      display: grid;
+      gap: 12px;
+      margin-top: 25px;
+    }
+
+    .field {
+      width: 100%;
+      min-height: 47px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      outline: none;
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+      font: inherit;
+      font-size: 0.79rem;
+    }
+
+    .field:focus {
+      border-color: var(--lime);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .success-state {
+      display: none;
+      padding: 28px 5px 10px;
+      text-align: center;
+    }
+
+    .success-state.visible {
+      display: block;
+    }
+
+    .success-icon {
+      display: grid;
+      width: 68px;
+      height: 68px;
+      margin: 0 auto 17px;
+      place-items: center;
+      border-radius: 50%;
+      color: #111511;
+      background: var(--lime);
+    }
+
+    .success-state h3 {
+      margin: 0;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1.7rem;
+    }
+
+    .success-state p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 1050px) {
+      .hero {
+        grid-template-columns: 1fr;
+        padding-top: 130px;
+      }
+
+      .hero-copy {
+        max-width: 700px;
+      }
+
+      .visual-wrap {
+        min-height: 570px;
+      }
+
+      .product-section,
+      .manifesto {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .product-details {
+        justify-self: start;
+      }
+
+      .feature-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .shell,
+      .navbar {
+        width: min(100% - 28px, 1440px);
+      }
+
+      .navbar {
+        top: 10px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        min-height: auto;
+        padding-top: 115px;
+      }
+
+      h1 {
+        font-size: clamp(4rem, 19vw, 7rem);
+      }
+
+      .hero-meta {
+        flex-wrap: wrap;
+        margin-top: 36px;
+      }
+
+      .visual-wrap {
+        min-height: 480px;
+        border-radius: 25px;
+      }
+
+      .visual-label.top {
+        top: 16px;
+        left: 16px;
+      }
+
+      .visual-label.bottom {
+        right: 16px;
+        bottom: 16px;
+      }
+
+      .canvas-controls {
+        right: 16px;
+        bottom: 16px;
+      }
+
+      .product-section,
+      .features,
+      .manifesto {
+        padding: 75px 0;
+      }
+
+      .detail-header {
+        display: block;
+      }
+
+      .rating {
+        margin-top: 13px;
+      }
+
+      .details-list,
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .features-head {
+        display: block;
+      }
+
+      .features-head p {
+        margin-top: 20px;
+        text-align: left;
+      }
+
+      .feature-card {
+        min-height: 190px;
+      }
+
+      .feature-icon {
+        margin-bottom: 34px;
+      }
+
+      .manifesto-number {
+        font-size: 3.5rem;
+      }
+
+      .footer-row {
+        display: block;
+      }
+
+      .footer-links {
+        margin-top: 15px;
+      }
+    }
+  </style>
 </head>
 <body>
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a class="brand" href="#top">
+        <span class="brand-mark">N</span>
+        NOXA
+      </a>
+      <div class="nav-links">
+        <a href="#product">Product</a>
+        <a href="#technology">Technology</a>
+        <a href="#story">Manifesto</a>
+      </div>
+      <div class="nav-actions">
+        <button class="icon-button" id="sound-toggle" aria-label="Toggle sound">
+          <i data-lucide="volume-2"></i>
+        </button>
+        <button class="cart-button" id="open-cart">
+          <i data-lucide="shopping-bag" width="16" height="16"></i>
+          Cart
+          <span class="cart-count" id="cart-count">0</span>
+        </button>
+      </div>
+    </div>
+  </nav>
 
-<div class="bg-glow"></div>
+  <main id="top">
+    <section class="hero shell">
+      <div class="hero-copy">
+        <div class="eyebrow">New signal / 2026 collection</div>
+        <h1>Hear the<br><span>future.</span></h1>
+        <p class="hero-description">Aether X1 is a precision-built spatial audio system for people who move through the world differently.</p>
+        <div class="hero-actions">
+          <a class="primary-button" href="#product">Explore Aether X1 <i data-lucide="arrow-down-right" width="17"></i></a>
+          <button class="secondary-button" id="hero-add">Add to bag <i data-lucide="plus" width="16"></i></button>
+        </div>
+        <div class="hero-meta">
+          <div class="meta-item"><i data-lucide="shield-check" width="16"></i> 3-year protection</div>
+          <div class="meta-item"><i data-lucide="zap" width="16"></i> Ships in 24 hours</div>
+        </div>
+      </div>
 
-<nav>
-  <div class="logo">✦ Nova</div>
-  <ul class="nav-links">
-    <li><a href="#features">Features</a></li>
-    <li><a href="#stats">Stats</a></li>
-    <li><a href="#cta">Pricing</a></li>
-  </ul>
-  <button class="btn">Get Started</button>
-</nav>
+      <div class="visual-wrap">
+        <canvas id="product-canvas"></canvas>
+        <div class="visual-label top">
+          <div class="mono">Object 01 / Aether X1</div>
+          <strong>Spatial audio system</strong>
+        </div>
+        <div class="visual-label bottom">
+          <div class="mono">Material study</div>
+          <strong id="material-label">Obsidian / Liquid metal</strong>
+        </div>
+        <div class="canvas-controls">
+          <button class="canvas-control" id="rotate-toggle" aria-label="Toggle auto rotate"><i data-lucide="rotate-3d" width="16"></i></button>
+          <button class="canvas-control" id="wire-toggle" aria-label="Toggle X-ray mode"><i data-lucide="scan-line" width="16"></i></button>
+        </div>
+      </div>
+    </section>
 
-<header class="hero">
-  <div class="badge">🚀 Now in public beta</div>
-  <h1>Build something <span>extraordinary</span> today</h1>
-  <p>Nova gives you the tools to design, launch, and scale beautiful digital products — faster than ever before.</p>
-  <div class="hero-cta">
-    <button class="btn">Start Free Trial</button>
-    <button class="btn btn-ghost">Watch Demo</button>
-  </div>
-</header>
+    <section class="product-section shell" id="product">
+      <div>
+        <div class="eyebrow">Configure yours</div>
+        <h2 class="section-title">Designed for<br>deep focus.</h2>
+        <p class="section-copy">Every surface, sound chamber and control is tuned to disappear when you need focus and respond when you need control.</p>
+      </div>
 
-<section id="features">
-  <h2 class="section-title">Everything you need</h2>
-  <p class="section-sub">Powerful features designed to help your team move faster.</p>
-  <div class="grid">
-    <div class="card">
-      <div class="icon">⚡</div>
-      <h3>Lightning Fast</h3>
-      <p>Optimized performance with sub-second load times, everywhere in the world.</p>
+      <div class="product-details">
+        <div class="detail-header">
+          <div>
+            <h2 class="detail-title">Aether X1</h2>
+            <div class="price-row">
+              <span class="price">$449</span>
+              <span class="old-price">$499</span>
+            </div>
+          </div>
+          <div class="rating"><i data-lucide="star" width="15" fill="currentColor"></i> 4.9 <span>(128 reviews)</span></div>
+        </div>
+
+        <div class="option-label">
+          <span>Finish</span>
+          <span class="selected-value" id="finish-value">Obsidian</span>
+        </div>
+        <div class="swatches">
+          <button class="swatch active" style="--swatch:#171a1a" data-color="#171a1a" data-accent="#cbf56a" data-name="Obsidian" aria-label="Obsidian"></button>
+          <button class="swatch" style="--swatch:#d6d4c8" data-color="#d6d4c8" data-accent="#8be9e4" data-name="Bone White" aria-label="Bone White"></button>
+          <button class="swatch" style="--swatch:#a84936" data-color="#a84936" data-accent="#f6a56b" data-name="Oxide Red" aria-label="Oxide Red"></button>
+          <button class="swatch" style="--swatch:#314f53" data-color="#314f53" data-accent="#8be9e4" data-name="Deep Teal" aria-label="Deep Teal"></button>
+        </div>
+
+        <div class="option-label">
+          <span>Fit profile</span>
+          <span class="selected-value" id="size-value">Standard</span>
+        </div>
+        <div class="size-grid">
+          <button class="size-button" data-size="Compact">Compact</button>
+          <button class="size-button active" data-size="Standard">Standard</button>
+          <button class="size-button" data-size="Extended">Extended</button>
+        </div>
+
+        <div class="buy-row">
+          <div class="quantity">
+            <button id="quantity-minus">−</button>
+            <span id="quantity-value">1</span>
+            <button id="quantity-plus">+</button>
+          </div>
+          <button class="primary-button" id="add-to-cart">Add Aether X1 to bag <i data-lucide="shopping-bag" width="17"></i></button>
+        </div>
+
+        <div class="details-list">
+          <div class="detail-chip"><i data-lucide="battery-charging" width="18"></i> 60-hour battery</div>
+          <div class="detail-chip"><i data-lucide="waves" width="18"></i> Adaptive ANC</div>
+          <div class="detail-chip"><i data-lucide="bluetooth" width="18"></i> Bluetooth 5.4</div>
+          <div class="detail-chip"><i data-lucide="package-check" width="18"></i> Carbon-neutral ship</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" id="technology">
+      <div class="shell">
+        <div class="features-head">
+          <div>
+            <div class="eyebrow">The architecture</div>
+            <h2 class="section-title">Quietly<br>advanced.</h2>
+          </div>
+          <p>Technology that does more by asking less of you. Aether X1 keeps the controls close, the distractions far away.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-icon"><i data-lucide="audio-lines"></i></div>
+            <h3>Spatial field</h3>
+            <p>Immersive 360-degree sound with head-tracked positioning.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon"><i data-lucide="focus"></i></div>
+            <h3>Zero distraction</h3>
+            <p>Adaptive noise cancellation learns the rhythm of your environment.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon"><i data-lucide="fingerprint"></i></div>
+            <h3>Haptic control</h3>
+            <p>Silent tactile controls make every gesture deliberate and precise.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon"><i data-lucide="feather"></i></div>
+            <h3>Weightless fit</h3>
+            <p>Memory foam cushions and aerospace-grade alloy distribute pressure evenly.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="manifesto shell" id="story">
+      <div>
+        <div class="manifesto-number">04</div>
+        <div class="mono" style="margin-top:15px;">A different frequency</div>
+      </div>
+      <h2>Make space for the signal that <em>matters.</em></h2>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-row">
+      <div class="footer-copy">© 2026 NOXA Studio. Crafted for the next frequency.</div>
+      <div class="footer-links">
+        <a href="#top">Instagram</a>
+        <a href="#top">Support</a>
+        <a href="#top">Journal</a>
+      </div>
     </div>
-    <div class="card">
-      <div class="icon">🔒</div>
-      <h3>Secure by Default</h3>
-      <p>Enterprise-grade encryption and compliance built into every layer.</p>
+  </footer>
+
+  <div class="drawer-backdrop" id="drawer-backdrop"></div>
+  <aside class="cart-drawer" id="cart-drawer">
+    <div class="drawer-header">
+      <div>
+        <div class="mono">Your selection</div>
+        <h2 class="drawer-title">Shopping bag</h2>
+      </div>
+      <button class="close-button" id="close-cart" aria-label="Close cart"><i data-lucide="x" width="18"></i></button>
     </div>
-    <div class="card">
-      <div class="icon">🎨</div>
-      <h3>Beautiful Design</h3>
-      <p>Pixel-perfect components and themes that adapt to your brand instantly.</p>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="drawer-footer">
+      <div class="subtotal-row"><span>Subtotal</span><strong id="subtotal">$0</strong></div>
+      <button class="primary-button" id="checkout-button" style="width:100%;">Proceed to checkout <i data-lucide="arrow-right" width="17"></i></button>
     </div>
-    <div class="card">
-      <div class="icon">📊</div>
-      <h3>Smart Analytics</h3>
-      <p>Real-time insights that help you make better decisions, faster.</p>
+  </aside>
+
+  <div class="modal-backdrop" id="modal-backdrop"></div>
+  <section class="checkout-modal" id="checkout-modal">
+    <div class="modal-head">
+      <div>
+        <div class="eyebrow" style="margin-bottom:12px;">Secure checkout</div>
+        <h2>Make it yours.</h2>
+        <p>Complete your details and we will prepare your Aether X1 for dispatch.</p>
+      </div>
+      <button class="close-button" id="close-modal" aria-label="Close checkout"><i data-lucide="x" width="18"></i></button>
     </div>
-    <div class="card">
-      <div class="icon">🤝</div>
-      <h3>Team Collaboration</h3>
-      <p>Work together seamlessly with live editing and instant sync.</p>
+    <form class="checkout-form" id="checkout-form">
+      <input class="field" type="text" placeholder="Full name" required>
+      <input class="field" type="email" placeholder="Email address" required>
+      <input class="field" type="text" placeholder="Shipping address" required>
+      <div class="form-row">
+        <input class="field" type="text" placeholder="City" required>
+        <input class="field" type="text" placeholder="Postal code" required>
+      </div>
+      <input class="field" type="text" placeholder="Card number" inputmode="numeric" required>
+      <button class="primary-button" type="submit">Complete order <i data-lucide="lock-keyhole" width="16"></i></button>
+    </form>
+    <div class="success-state" id="success-state">
+      <div class="success-icon"><i data-lucide="check" width="31"></i></div>
+      <h3>Order confirmed.</h3>
+      <p>Your Aether X1 is moving toward you. A confirmation has been sent to your inbox.</p>
     </div>
-    <div class="card">
-      <div class="icon">🌍</div>
-      <h3>Global Scale</h3>
-      <p>Deployed across 30+ regions so your users are always
+  </section>
+
+  <script>
+    lucide.createIcons();
+
+    const state = {
+      color: "#171a1a",
+      accent: "#cbf56a",
+      finish: "Obsidian",
+      size: "Standard",
+      quantity: 1,
+      cart: [],
+      sound: true,
+      wireframe: false,
+      autoRotate: true
+    };
+
+    let audioContext;
+
+    function playTone(type) {
+      if (!state.sound) return;
+      audioContext = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+      const now = audioContext.currentTime;
+      const oscillator = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      oscillator.connect(gain);
+      gain.connect(audioContext.destination);
+
+      if (type === "hover") {
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(520, now);
+        oscillator.frequency.exponentialRampToValueAtTime(680, now + 0.07);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.035, now + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
+        oscillator.start(now);
+        oscillator.stop(now + 0.09);
+      }
+
+      if (type === "select") {
+        oscillator.type = "triangle";
+        oscillator.frequency.setValueAtTime(440, now);
+        oscillator.frequency.exponentialRampToValueAtTime(880, now + 0.18);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.08, now + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+        oscillator.start(now);
+        oscillator.stop(now + 0.32);
+      }
+
+      if (type === "success") {
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(523.25, now);
+        oscillator.frequency.setValueAtTime(659.25, now + 0.13);
+        oscillator.frequency.setValueAtTime(783.99, now + 0.26);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.1, now + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+        oscillator.start(now);
+        oscillator.stop(now + 0.52);
+      }
+    }
+
+    document.querySelectorAll("button, a").forEach(element => {
+      element.addEventListener("mouseenter", () => playTone("hover"));
+    });
+
+    const canvas = document.getElementById("product-canvas");
+    const visualWrap = document.querySelector(".visual-wrap");
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+    camera.position.set(0, 0.1, 7.3);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.shadowMap.enabled = true;
+
+    const controls = new THREE.OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.enablePan = false;
+    controls.minDistance = 5.2;
+    controls.maxDistance = 9;
+    controls.minPolarAngle = Math.PI * 0.34;
+    controls.maxPolarAngle = Math.PI * 0.66;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 1.2;
+
+    const ambient = new THREE.HemisphereLight(0xdfffea, 0x111516, 2.2);
+    scene.add(ambient);
+
+    const keyLight = new THREE.DirectionalLight(0xffffff, 4.5);
+    keyLight.position.set(4, 5, 6);
+    keyLight.castShadow = true;
+    scene.add(keyLight);
+
+    const rimLight = new THREE.PointLight(0x8be9e4, 5, 12);
+    rimLight.position.set(-4, 2, -3);
+    scene.add(rimLight);
+
+    const limeLight = new THREE.PointLight(0xcbf56a, 3, 10);
+    limeLight.position.set(2, -2, 4);
+    scene.add(limeLight);
+
+    const product = new THREE.Group();
+    product.rotation.y = -0.42;
+    product.rotation.x = 0.05;
+    scene.add(product);
+
+    const material = new THREE.MeshPhysicalMaterial({
+      color: state.color,
+      metalness: 0.82,
+      roughness: 0.2,
+      clearcoat: 0.7,
+      clearcoatRoughness: 0.12
+    });
+
+    const accentMaterial = new THREE.MeshPhysicalMaterial({
+      color: state.accent,
+      metalness: 0.65,
+      roughness: 0.18,
+      emissive: state.accent,
+      emissiveIntensity: 0.12
+    });
+
+    const innerMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0x080a0a,
+      metalness: 0.2,
+      roughness: 0.5
+    });
+
+    const band = new THREE.Mesh(
+      new THREE.TorusGeometry(1.58, 0.15, 32, 96, Math.PI),
+      material
+    );
+    band.rotation.z = Math.PI;
+    band.position.y = 0.42;
+    product.add(band);
+
+    const bandInner = new THREE.Mesh(
+      new THREE.TorusGeometry(1.47, 0.045, 16, 96, Math.PI),
+      accentMaterial
+    );
+    bandInner.rotation.z = Math.PI;
+    bandInner.position.y = 0.42;
+    product.add(bandInner);
+
+    function createCup(side) {
+      const group = new THREE.Group();
+      group.position.set(side * 1.55, -0.42, 0);
+      group.rotation.z = side * -0.08;
+
+      const outer = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.68, 0.78, 0.43, 64, 1),
+        material
+      );
+      outer.rotation.z = Math.PI / 2;
+      outer.castShadow = true;
+      group.add(outer);
+
+      const cushion = new THREE.Mesh(
+        new THREE.TorusGeometry(0.47, 0.16, 32, 64),
+        innerMaterial
+      );
+      cushion.rotation.y = Math.PI / 2;
+      cushion.position.x = side * 0.23;
+      group.add(cushion);
+
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(0.54, 0.035, 16, 64),
+        accentMaterial
+      );
+      ring.rotation.y = Math.PI / 2;
+      ring.position.x = side * 0.245;
+      group.add(ring);
+
+      const plate = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.48, 0.48, 0.04, 64),
+        accentMaterial
+      );
+      plate.rotation.z = Math.PI / 2;
+      plate.position.x = side * 0.26;
+      plate.scale.set(1, 0.88, 1);
+      group.add(plate);
+
+      const logo = new THREE.Mesh(
+        new THREE.TorusGeometry(0.17, 0.025, 16, 32),
+        innerMaterial
+      );
+      logo.rotation.y = Math.PI / 2;
+      logo.position.x = side * 0.29;
+      group.add(logo);
+
+      product.add(group);
+    }
+
+    createCup(-1);
+    createCup(1);
+
+    const bridgeLeft = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.16, 0.16, 0.75, 32),
+      material
+    );
+    bridgeLeft.position.set(-1.45, 0.2, 0);
+    bridgeLeft.rotation.z = 0.15;
+    product.add(bridgeLeft);
+
+    const bridgeRight = bridgeLeft.clone();
+    bridgeRight.position.x = 1.45;
+    bridgeRight.rotation.z = -0.15;
+    product.add(bridgeRight);
+
+    const floor = new THREE.Mesh(
+      new THREE.CircleGeometry(3.4, 64),
+      new THREE.MeshBasicMaterial({ color: 0xcbf56a, transparent: true, opacity: 0.06 })
+    );
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = -1.38;
+    scene.add(floor);
+
+    function resizeRenderer() {
+      const width = visualWrap.clientWidth;
+      const height = visualWrap.clientHeight;
+      renderer.setSize(width, height, false);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+    }
+
+    resizeRenderer();
+    window.addEventListener("resize", resizeRenderer);
+
+    function render() {
+      controls.autoRotate = state.autoRotate;
+      controls.update();
+      renderer.render(scene, camera);
+      requestAnimationFrame(render);
+    }
+
+    render();
+
+    function setProductMaterial(color, accent, name) {
+      state.color = color;
+      state.accent = accent;
+      state.finish = name;
+      material.color.set(color);
+      accentMaterial.color.set(accent);
+      accentMaterial.emissive.set(accent);
+      document.documentElement.style.setProperty("--lime", accent);
+      document.getElementById("finish-value").textContent = name;
+      document.getElementById("material-label").textContent = name + " / Liquid metal";
+      gsap.fromTo(product.scale, { x: 0.86, y: 0.86, z: 0.86 }, { x: 1, y: 1, z: 1, duration: 0.65, ease: "back.out(1.8)" });
+      playTone("select");
+    }
+
+    document.querySelectorAll(".swatch").forEach(swatch => {
+      swatch.addEventListener("click", () => {
+        document.querySelectorAll(".swatch").forEach(item => item.classList.remove("active"));
+        swatch.classList.add("active");
+        setProductMaterial(swatch.dataset.color, swatch.dataset.accent, swatch.dataset.name);
+      });
+    });
+
+    document.querySelectorAll(".size-button").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".size-button").forEach(item => item.classList.remove("active"));
+        button.classList.add("active");
+        state.size = button.dataset.size;
+        document.getElementById("size-value").textContent = state.size;
+        playTone("select");
+      });
+    });
+
+    document.getElementById("rotate-toggle").addEventListener("click", event => {
+      state.autoRotate = !state.autoRotate;
+      event.currentTarget.classList.toggle("active", state.autoRotate);
+      playTone("select");
+    });
+
+    document.getElementById("wire-toggle").addEventListener("click", event => {
+      state.wireframe = !state.wireframe;
+      event.currentTarget.classList.toggle("active", state.wireframe);
+      product.traverse(object => {
+        if (object.isMesh && object.material !== undefined) {
+          if (state.wireframe) {
+            object.material.wireframe = true;
+            object.material.transparent = true;
+            object.material.opacity = 0.72;
+          } else {
+            object.material.wireframe = false;
+            object.material.transparent = false;
+            object.material.opacity = 1;
+          }
+        }
+      });
+      gsap.fromTo(product.rotation, { y: product.rotation.y - 0.18 }, { y: product.rotation.y + 0.18, duration: 0.6, ease: "power2.out" });
+      playTone("select");
+    });
+
+    document.getElementById("quantity-minus").addEventListener("click", () => {
+      state.quantity = Math.max(1, state.quantity - 1);
+      document.getElementById("quantity-value").textContent = state.quantity;
+      playTone("hover");
+    });
+
+    document.getElementById("quantity-plus").addEventListener("click", () => {
+      state.quantity += 1;
+      document.getElementById("quantity-value").textContent = state.quantity;
+      playTone("hover");
+    });
+
+    const cartDrawer = document.getElementById("cart-drawer");
+    const drawerBackdrop = document.getElementById("drawer-backdrop");
+    const modal = document.getElementById("checkout-modal");
+    const modalBackdrop = document.getElementById("modal-backdrop");
+
+    function openCart() {
+      drawerBackdrop.classList.add("visible");
+      gsap.to(cartDrawer, { x: 0, duration: 0.5, ease: "power3.out" });
+    }
+
+    function closeCart() {
+      drawerBackdrop.classList.remove("visible");
+      gsap.to(cartDrawer, { x: "100%", duration: 0.4, ease: "power3.in" });
+    }
+
+    function addToCart() {
+      const existing = state.cart.find(item => item.finish === state.finish && item.size === state.size);
+      if (existing) {
+        existing.quantity += state.quantity;
+      } else {
+        state.cart.push({
+          name: "Aether X1",
+          finish: state.finish,
+          size: state.size,
+          quantity: state.quantity,
+          price: 449,
+          accent: state.accent
+        });
+      }
+      state.quantity = 1;
+      document.getElementById("quantity-value").textContent = "1";
+      updateCart();
+      playTone("select");
+      openCart();
+    }
+
+    function removeFromCart(index) {
+      state.cart.splice(index, 1);
+      updateCart();
+      playTone("hover");
+    }
+
+    function updateCart() {
+      const itemsContainer = document.getElementById("cart-items");
+      const count = state.cart.reduce((total, item) => total + item.quantity, 0);
+      const subtotal = state.cart.reduce((total, item) => total + item.quantity * item.price, 0);
+      document.getElementById("cart-count").textContent = count;
+      document.getElementById("subtotal").textContent = "$" + subtotal.toLocaleString();
+
+      if (!state.cart.length) {
+        itemsContainer.innerHTML = '<div class="empty-cart"><div><i data-lucide="shopping-bag" width="28"></i>Your bag is waiting for a signal.</div></div>';
+        lucide.createIcons();
+        return;
+      }
+
+      itemsContainer.innerHTML = state.cart.map((item, index) => `
+        <div class="cart-item">
+          <div class="cart-thumb"><i data-lucide="headphones" width="28"></i></div>
+          <div>
+            <p class="cart-item-name">${item.name}</p>
+            <div class="cart-item-meta">${item.finish} / ${item.size} / Qty ${item.quantity}</div>
+            <div class="cart-item-price">$${(item.price * item.quantity).toLocaleString()}</div>
+          </div>
+          <button class="remove-item" data-index="${index}" aria-label="Remove item"><i data-lucide="trash-2" width="15"></i></button>
+        </div>
+      `).join("");
+
+      itemsContainer.querySelectorAll(".remove-item").forEach(button => {
+        button.addEventListener("click", () => removeFromCart(Number(button.dataset.index)));
+      });
+      lucide.createIcons();
+    }
+
+    document.getElementById("add-to-cart").addEventListener("click", addToCart);
+    document.getElementById("hero-add").addEventListener("click", addToCart);
+    document.getElementById("open-cart").addEventListener("click", openCart);
+    document.getElementById("close-cart").addEventListener("click", closeCart);
+    drawerBackdrop.addEventListener("click", closeCart);
+
+    function openCheckout() {
+      if (!state.cart.length) {
+        gsap.fromTo(cartDrawer, { x: 0 }, { x: -8, yoyo: true, repeat: 3, duration: 0.07 });
+        return;
+      }
+      closeCart();
+      modalBackdrop.classList.add("visible");
+      gsap.to(modal, { opacity: 1, scale: 1, y: "-50%", duration: 0.4, ease: "back.out(1.4)" });
+      modal.classList.add("visible");
+    }
+
+    function closeCheckout() {
+      modalBackdrop.classList.remove("visible");
+      modal.classList.remove("visible");
+      gsap.to(modal, { opacity: 0, scale: 0.95, y: "-46%", duration: 0.25, ease: "power2.in" });
+    }
+
+    document.getElementById("checkout-button").addEventListener("click", openCheckout);
+    document.getElementById("close-modal").addEventListener("click", closeCheckout);
+    modalBackdrop.addEventListener("click", closeCheckout);
+
+    document.getElementById("checkout-form").addEventListener("submit", event => {
+      event.preventDefault();
+      document.getElementById("checkout-form").style.display = "none";
+      document.getElementById("success-state").classList.add("visible");
+      playTone("success");
+      state.cart = [];
+      updateCart();
+      lucide.createIcons();
+    });
+
+    document.getElementById("sound-toggle").addEventListener("click", event => {
+      state.sound = !state.sound;
+      event.currentTarget.innerHTML = state.sound
+        ? '<i data-lucide="volume-2"></i>'
+        : '<i data-lucide="volume-x"></i>';
+      lucide.createIcons();
+      if (state.sound) playTone("select");
+    });
+
+    gsap.from(".hero-copy > *", {
+      y: 24,
+      opacity: 0,
+      duration: 0.8,
+      stagger: 0.1,
+      ease: "power3.out",
+      delay: 0.15
+    });
+
+    gsap.from(".visual-wrap", {
+      scale: 0.94,
+      opacity: 0,
+      duration: 1,
+      ease: "power3.out"
+    });
+
+    updateCart();
+  </script>
+</body>
+</html>
